@@ -75,7 +75,7 @@ public class Bot {
 		}
 
 		public boolean canMove(Coord coord, Board board) {
-			return canMovePredicate.test(coord, board);
+			return canMovePredicate.test(coord, board) && !board.hasBot(getStep(coord, 1));
 		}
 	}
 
@@ -222,9 +222,13 @@ public class Bot {
 			// get out of line of fire
 			System.out.println("Being attacked, moving randomly");
 			if (isForwardPossible(selfState, board)) {
+				System.out.println(" forward is possible");
 				return "F";
 			} else {
-				return random.nextInt() % 2 == 0 ? "R" : "L";
+
+				String rnd = random.nextInt() % 2 == 0 ? "R" : "L";
+				System.out.println("  random turn: " + rnd);
+				return rnd;
 			}
 		} else if (canThrowLeaf(selfCoord, selfDirection, board)) {
 			System.out.println("Can throw leaf from " + selfCoord + " facing " + selfDirection);
