@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.IntBinaryOperator;
-import java.util.function.IntFunction;
-import java.util.function.IntUnaryOperator;
 
 public class Bot {
 
@@ -125,8 +123,11 @@ public class Bot {
 				} else {
 					northBots++;
 				}
-
 			}
+
+			System.out.println("Bot counts: N=" + northBots + ", S=" + southBots
+					+ ", W=" + westBots + ", E=" + eastBots);
+
 		}
 
 		public boolean hasBot(Coord coord) {
@@ -156,12 +157,18 @@ public class Bot {
 
 		public boolean hasThreatBot(Coord coord) {
 			for (Direction direction : Direction.values()) {
-				if (hasBot(direction, direction.getThreat(coord, 1))
-						|| hasBot(direction, direction.getThreat(coord, 2))
-						|| hasBot(direction, direction.getThreat(coord, 3))) {
+				if (hasBot(direction, direction.getThreat(coord, 1))) {
+					System.out.println("1 step threat at " + coord);
+					return true;
+				} else if (hasBot(direction, direction.getThreat(coord, 2))) {
+					System.out.println("2 step threat at " + coord);
+					return true;
+				} else if (hasBot(direction, direction.getThreat(coord, 3))) {
+					System.out.println("3 step threat at " + coord);
 					return true;
 				}
 			}
+			System.out.println("No threat at " + coord);
 			return false;
 
 		}
@@ -186,6 +193,7 @@ public class Bot {
 				maxDirection = Direction.W;
 				//maxBots = eastBots;
 			}
+			System.out.println("Most bots (" + maxBots + ") in direction " + maxDirection);
 
 			return maxDirection;
 		}
@@ -209,12 +217,15 @@ public class Bot {
 		Direction selfDirection = Direction.valueOf(selfState.direction);
 
 		if (canThrowLeaf(selfCoord, selfDirection, board)) {
+			System.out.println("Can throw leaf from " + selfCoord + " facing " + selfDirection);
 			return "T";
-		} else if (mustRunAway(selfCoord, board)) {
+		} /*else if (mustRunAway(selfCoord, board)) {
 			// TODO: optimize R vs L
 			return isForwardPossible(selfDirection, selfCoord, board) ? "F" : "R";
-		} else {
-			return getDirectionWithMostTargets(board).toString();
+		}*/ else {
+			Direction dir = getDirectionWithMostTargets(board);
+			System.out.println("Going in direction with most targets: " + dir);
+			return dir.toString();
 		}
 		/*
 		System.out.println(arena);

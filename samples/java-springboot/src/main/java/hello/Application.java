@@ -31,7 +31,14 @@ public class Application {
 
   @PostMapping("/**")
   public String index(@RequestBody ArenaUpdate arenaUpdate) {
-    return bot.move(arenaUpdate);
+    try {
+      return bot.move(arenaUpdate);
+    } catch (Exception e) {
+      System.out.println("OH NO, EXCEPTION!");
+      e.printStackTrace();
+
+      return "R";
+    }
   }
 
 }
