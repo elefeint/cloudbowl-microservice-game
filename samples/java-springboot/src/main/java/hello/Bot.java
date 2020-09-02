@@ -2,6 +2,7 @@ package hello;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.BiPredicate;
 import java.util.function.IntBinaryOperator;
 
@@ -216,7 +217,11 @@ public class Bot {
 		Coord selfCoord = new Coord(selfState.x, selfState.y);
 		Direction selfDirection = Direction.valueOf(selfState.direction);
 
-		if (canThrowLeaf(selfCoord, selfDirection, board)) {
+		if (selfState.wasHit) {
+			// get out of line of fire
+			System.out.println("Being attacked, moving randomly");
+			return randomDirection();
+		} else if (canThrowLeaf(selfCoord, selfDirection, board)) {
 			System.out.println("Can throw leaf from " + selfCoord + " facing " + selfDirection);
 			return "T";
 		} /*else if (mustRunAway(selfCoord, board)) {
@@ -234,6 +239,12 @@ public class Bot {
 		return commands[i];
 
 		 */
+	}
+
+	String randomDirection() {
+		String[] commands = new String[] {"F", "R", "L"};
+		int i = new Random().nextInt(3);
+		return commands[i];
 	}
 
 	boolean isForwardPossible(PlayerState state, Board board) {
