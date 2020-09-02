@@ -230,7 +230,11 @@ public class Bot {
 		}*/ else {
 			Direction dir = getDirectionWithMostTargets(board);
 			System.out.println("Going in direction with most targets: " + dir);
-			return dir.toString();
+			if (selfDirection == dir) {
+				return "F";
+			} else {
+				return dir.ordinal() - selfDirection.ordinal() == 1 ? "R" : "L";
+			}
 		}
 		/*
 		System.out.println(arena);
