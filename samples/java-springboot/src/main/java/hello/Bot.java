@@ -8,6 +8,8 @@ import java.util.function.IntBinaryOperator;
 
 public class Bot {
 
+	private static Random random = new Random();
+
 	static enum Move {
 			FORWARD ("F"),
 			TURN_LEFT ("L"),
@@ -208,7 +210,6 @@ public class Bot {
 
 		String selfUrl = arenaUpdate._links.self.href;
 
-
 		// delete self from board before creating it
 		PlayerState selfState = arenaUpdate.arena.state.remove(selfUrl);
 
@@ -220,20 +221,36 @@ public class Bot {
 		if (selfState.wasHit) {
 			// get out of line of fire
 			System.out.println("Being attacked, moving randomly");
-			return randomDirection();
+			if (isForwardPossible(selfState, board)) {
+				return "F";
+			} else {
+				return random.nextInt() % 2 == 0 ? "R" : "L";
+			}
 		} else if (canThrowLeaf(selfCoord, selfDirection, board)) {
 			System.out.println("Can throw leaf from " + selfCoord + " facing " + selfDirection);
 			return "T";
-		} /*else if (mustRunAway(selfCoord, board)) {
+		}
+		//} else if () {
+		// can turn to target
+
+		/*else if (mustRunAway(selfCoord, board)) {
 			// TODO: optimize R vs L
 			return isForwardPossible(selfDirection, selfCoord, board) ? "F" : "R";
-		}*/ else {
+		}*/
+	 else {
 			Direction dir = getDirectionWithMostTargets(board);
+
 			System.out.println("Going in direction with most targets: " + dir);
+			if (board.hasThreatBot(dir.getStep(selfCoord, 1))) {
+				dir = Direction.values()[(dir.ordinal() + 1) % 4];
+				System.out.println("Best path under attack; picking next clockwise: " + dir);
+			}
+
 			if (selfDirection == dir) {
 				return "F";
 			} else {
-				return dir.ordinal() - selfDirection.ordinal() == 1 ? "R" : "L";
+				// todo: better logic for not turning 3 times
+				return "R";
 			}
 		}
 		/*
@@ -245,11 +262,7 @@ public class Bot {
 		 */
 	}
 
-	String randomDirection() {
-		String[] commands = new String[] {"F", "R", "L"};
-		int i = new Random().nextInt(3);
-		return commands[i];
-	}
+
 
 	boolean isForwardPossible(PlayerState state, Board board) {
 		return isForwardPossible(Direction.valueOf(state.direction), new Coord(state.x, state.y),
