@@ -1,12 +1,8 @@
 package hello;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import hello.Bot.Board;
-import hello.Bot.Coord;
-import hello.Bot.Direction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.junit.Test;
@@ -23,15 +19,13 @@ public class BotTest {
 		arena.dims.add(3); // tall
 		arena.state = new HashMap<>();
 
-		board3by3 = new Board(arena, new PlayerState(0, 0, "W"));;
+		board3by3 = new Board(arena);
 
 	}
 	Bot bot = new Bot();
 
 	@Test
 	public void isForwardPossible_middleOfBoard() {
-
-
 
 		assertTrue(bot.isForwardPossible(new PlayerState(1, 1, "N"), board3by3));
 		assertTrue(bot.isForwardPossible(new PlayerState(1, 1, "S"), board3by3));
@@ -68,49 +62,7 @@ public class BotTest {
 		assertTrue(bot.isForwardPossible(new PlayerState(1, 2, "W"), board3by3));
 	}
 
-	@Test
-	public void initBoardWithBots() {
-		Arena arena = new Arena();
-		arena.dims = new ArrayList<>(2);
-		arena.dims.add(3); // narrow
-		arena.dims.add(6); // tall
-		arena.state = new HashMap<>();
-
-		// unused
-		PlayerState selfState = new PlayerState(0, 0, "N");
-
-		PlayerState stateA = new PlayerState(2, 5, "N"); // lower right corner
-		PlayerState stateB = new PlayerState(1, 3, "W");
-		arena.state.put("playerA", stateA);
-		arena.state.put("playerB", stateB);
-
-
-		Board board = new Board(arena, selfState);
-		assertEquals(3, board.width);
-		assertEquals(6, board.height);
-		assertEquals(2, board.eastBots);
-		assertEquals(0, board.westBots);
-		assertEquals(0, board.northBots);
-		assertEquals(2, board.southBots);
-		assertEquals(Direction.S, board.getDirectionWithMostTargets());
-
-		assertTrue(board.hasBot(new Coord(2, 5)));
-		assertTrue(board.hasBot(new Coord(1, 3)));
-
-		assertFalse(board.hasBot(new Coord(0, 0)));
-		assertFalse(board.hasBot(new Coord(0, 5)));
-		assertFalse(board.hasBot(new Coord(2, 0)));
-
-	}
-
-	@Test
-	public void direction() {
-		Direction north = Direction.N;
-		Coord current = new Coord(10, 10);
-		assertEquals("[10, 7]", north.getStep(current, 3).toString());
-	}
-
-	@Test
+		@Test
 	public void canThrowLeaf() {
 
 		/*
@@ -121,23 +73,12 @@ public class BotTest {
 		    _ _ X
 		    _ _ <O
 		 */
-		Arena arena = new Arena();
-		arena.dims = new ArrayList<>(2);
-		arena.dims.add(3); // narrow
-		arena.dims.add(6); // tall
-		arena.state = new HashMap<>();
-		PlayerState stateA = new PlayerState(2, 5, "N"); // lower right corner
-		PlayerState stateB = new PlayerState(1, 3, "W");
-		arena.state.put("playerA", stateA);
-		arena.state.put("playerB", stateB);
+		Arena arena = new Arena(3, 6,
+				new PlayerState("playerA",2, 5, "N"), // lower right corner
+				new PlayerState("playerB",1, 3, "W"));
 
-		PlayerState selfState = new PlayerState(2, 4, "N"); // unused
-		Board board = new Board(arena, selfState);
-		assertEquals(1, board.eastBots);
-		assertEquals(1, board.westBots);
-		assertEquals(1, board.northBots);
-		assertEquals(1, board.southBots);
-		assertEquals(Direction.N, board.getDirectionWithMostTargets());
+		Board board = new Board(arena);
+
 
 		/*
 				X _ _
@@ -219,18 +160,12 @@ public class BotTest {
 		    _ _ _
 		    _ _ ^
 		 */
-		Arena arena = new Arena();
-		arena.dims = new ArrayList<>(2);
-		arena.dims.add(3); // narrow
-		arena.dims.add(6); // tall
-		arena.state = new HashMap<>();
-		PlayerState stateA = new PlayerState(2, 5, "N"); // lower right corner
-		PlayerState stateB = new PlayerState(1, 3, "W");
-		arena.state.put("playerA", stateA);
-		arena.state.put("playerB", stateB);
+		// tall and narrow
+		Arena arena = new Arena(3, 6,
+				new PlayerState("playerA", 2, 5, "N"), // lower right corner
+				new PlayerState("playerB",1, 3, "W"));
 
-		PlayerState selfState = new PlayerState(0, 0, "N"); // unused
-		Board board = new Board(arena, selfState);
+		Board board = new Board(arena);
 
 		/*
 				X _ _
