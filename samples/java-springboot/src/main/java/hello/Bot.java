@@ -66,8 +66,14 @@ public class Bot {
 
 			System.out.println("Going in direction with most targets: " + dir);
 			if (board.hasThreatBot(dir.getStep(selfCoord, 1))) {
-				dir = Direction.values()[(dir.ordinal() + 1) % 4];
-				System.out.println("Best path under attack; picking next clockwise: " + dir);
+				if (random.nextInt(20) != 7) {
+					dir = Direction.values()[(dir.ordinal() + 1) % 4];
+					System.out.println("Best path under attack; picking next clockwise: " + dir);
+				} else {
+					// 5% chance of going randomly to avoid getting stuck in loops.
+					System.out.println("Best path under attack, taking a random chance and going there anyway");
+				}
+
 			}
 
 			if (selfDirection == dir) {

@@ -32,7 +32,9 @@ public class Application {
   @PostMapping("/**")
   public String index(@RequestBody ArenaUpdate arenaUpdate) {
     try {
-      return bot.move(arenaUpdate);
+      String returnValue = bot.move(arenaUpdate);
+      System.out.println("Returning: " + returnValue);
+      return returnValue;
     } catch (Exception e) {
       System.out.println("OH NO, EXCEPTION!");
       e.printStackTrace();
